@@ -1,8 +1,6 @@
-import os
 from pprint import pprint
 
 import requests
-import json
 
 
 class ParserHH():
@@ -22,7 +20,7 @@ class ParserHH():
             'id': emp_info['id'],
             'name': emp_info['name'],
             'url': emp_info['alternate_url'],
-            'vacancies': emp_info['open_vacancies']
+            'vacancies': emp_info['open_vacancies'],
         }
 
     def job_employers(self) -> list[dict]:
@@ -34,7 +32,7 @@ class ParserHH():
 
     def get_vacancy_info(self, employer_id: int) -> dict:
         url = f'{self.base_url}vacancies?employer_id={employer_id}'
-        params = {'per_page': 10, 'employer_id': employer_id, 'area': 1}  # В данном запросе возвращается 10 вакансий
+        params = {'per_page': 30, 'employer_id': employer_id}  # Параметры запроса
         response = requests.get(url, params=params)
         response.raise_for_status()
         vacancy = response.json()
@@ -47,8 +45,7 @@ class ParserHH():
                     'url': v['alternate_url'],
                     'salary_from': v['salary'].get('from', None) if v['salary'] else None,
                     'salary_to': v['salary'].get('to', None) if v['salary'] else None,
-                    'experience': v['experience']['name'],
-                    'employment': v['employment']['name'],
+                    'area': v['area']['name']
                 }
                 for v in vacancy['items']
             ]
@@ -61,19 +58,19 @@ class ParserHH():
             for emp_id in self.id_employers
         ]
 
-#emp_id = (4219, 80, 132654, 2987, 7172, 2596486, 1375441, 4207409, 105688, 1100167)
+#emp_id = (2768743, 72404, 1758479, 3208395, 7788, 3089, 589513, 851138, 95255, 1100167)
 #api = ParserHH(emp_id)
 #data = api.job_employers()
 #vacancies = api.job_vacancies()
 #pprint(vacancies)
 
-# 80 - Альфа-Банк
-# 4219 - Теле2
-# 132654 - Нефте Транс Сервис
-# 2987 - КРОК
-# 7172 - Лента
-# 2596486 - Основа
-# 1375441 - Okko
-# 4207409 - Комитет
-# 105688 - Белая дача
+# 2768743 - EPILAS
+# 72404 - MIUZ diamonds
+# 1758479 - OOO Парадиз
+# 3208395 - ООО МЦ
+# 7788 - Симбат
+# 3089 - РУНА
+# 589513 - COZY HOME
+# 851138 - Студия Кефир
+# 95255 - MGCOM
 # 1100167 - Казанский университет

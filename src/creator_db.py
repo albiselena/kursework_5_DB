@@ -37,11 +37,10 @@ def create_tables(params: dict) -> None:
                 vacancy_id SERIAL PRIMARY KEY,
                 company_id INTEGER NOT NULL,
                 title VARCHAR(250) NOT NULL,
-                area VARCHAR(50),
+                city VARCHAR(100),
                 salary_from INTEGER,
                 salary_to INTEGER,
                 url TEXT,
-                experience VARCHAR(50),
                 FOREIGN KEY (company_id) REFERENCES employers (company_id)
             )"""
                     )
@@ -67,10 +66,9 @@ def loading_data_into_tables(params: dict, employer_id) -> None:
             company_id = cur.fetchone()[0]  # Получаем новый company_id из новой созданной таблицы с работодателями
             for v in vacancy['vacancies']:
                 cur.execute("""
-                    INSERT INTO vacancies (company_id, title, area, salary_from, salary_to, url, experience)
-                    VALUES (%s, %s, %s, %s, %s, %s, %s)
-                """, (company_id, v['name'], vacancy['area'], v['salary_from'], v['salary_to'], v['url'],
-                      v['experience']))
+                    INSERT INTO vacancies (company_id, title, city, salary_from, salary_to, url)
+                    VALUES (%s, %s, %s, %s, %s, %s)
+                """, (company_id, v['name'], v['area'], v['salary_from'], v['salary_to'], v['url']))
         print('Данные загружены в таблицы.')
 
     conn.commit()
@@ -78,6 +76,3 @@ def loading_data_into_tables(params: dict, employer_id) -> None:
 
 
 
-#create_database(params)
-#create_tables(params)
-#loading_data_into_tables(params, (80, 2987))
